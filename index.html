@@ -111,10 +111,8 @@
       <div class="help-title">Бонусы</div>
       <div class="help-grid">
         <div class="help-item"><span class="help-emoji">🍄</span><b>Мухомор</b> — Мир дышит и пульсирует</div>
-        <div class="help-item"><span class="help-emoji">💎</span><b>Кристалл</b> — Кристальное зрение, холодные тона</div>
         <div class="help-item"><span class="help-emoji">👁</span><b>Глаз</b> — Третий глаз открывается</div>
         <div class="help-item"><span class="help-emoji">⚡</span><b>Молния</b> — Ускорение + следы молний</div>
-        <div class="help-item"><span class="help-emoji">🌈</span><b>Радуга</b> — Радужный вихрь цветов</div>
         <div class="help-item"><span class="help-emoji">🌀</span><b>Портал</b> — Поле расширяется на время</div>
         <div class="help-item"><span class="help-emoji">👻</span><b>Призрак</b> — Проходишь сквозь себя и стены</div>
         <div class="help-item"><span class="help-emoji">🔥</span><b>Огонь</b> — Огненный хвост, всё пылает</div>
@@ -123,7 +121,7 @@
       <div class="help-grid">
         <div class="help-item"><span class="help-emoji">💉</span><b style="color:#f0f">Шприц</b> — МЕГА-ТРИП: экран плывёт, змейка волнится, всё искажается</div>
         <div class="help-item"><span class="help-emoji">🌿</span><b style="color:#4f4">Трава</b> — Слоумо, еда x3 очков, зелёный дым, расслабон</div>
-        <div class="help-item"><span class="help-emoji">💊</span><b style="color:#f4f">Таблетка</b> — Матрица: инверсия управления + неуязвимость + глитч</div>
+        <div class="help-item"><span class="help-emoji">🎭</span><b style="color:#f4f">Марка</b> — Калейдоскоп: мир дробится + неуязвимость</div>
       </div>
       <div class="help-hint">Супер-вкусняшки появляются после длины 8+ и длятся дольше</div>
       <div class="help-title" style="margin-top:10px;color:#f00">Полевые события (V2)</div>
@@ -229,7 +227,7 @@ const director={
     let pool;
     if(tier===2){pool=TYPES.filter(t=>t.tier===2)}
     else if(this.phase==='warmup'||this.rampProgress()<0.5){
-      const surv=['ghost','portal','crystal'];
+      const surv=['ghost','portal','eye'];
       pool=Math.random()<0.75?TYPES.filter(t=>surv.includes(t.effect)):TYPES.filter(t=>t.tier===1&&!surv.includes(t.effect));
     }else{pool=TYPES.filter(t=>t.tier===1)}
     const ty=pool[Math.floor(Math.random()*pool.length)];
@@ -356,17 +354,15 @@ let lb=JSON.parse(localStorage.getItem('hs_lb')||'[]');
 // ===== FOOD TYPES =====
 const TYPES=[
   {name:'Мухомор',emoji:'🍄',color:'#f44',effect:'mushroom',desc:'Мир дышит и пульсирует',tier:1},
-  {name:'Кристалл',emoji:'💎',color:'#4ff',effect:'crystal',desc:'Кристальное зрение',tier:1},
   {name:'Глаз',emoji:'👁',color:'#f0f',effect:'eye',desc:'Третий глаз открылся',tier:1},
   {name:'Молния',emoji:'⚡',color:'#ff0',effect:'speed',desc:'Ускорение + молнии',tier:1},
-  {name:'Радуга',emoji:'🌈',color:'#0f0',effect:'rainbow',desc:'Радужный вихрь',tier:1},
   {name:'Портал',emoji:'🌀',color:'#a0f',effect:'portal',desc:'Поле расширяется',tier:1},
   {name:'Призрак',emoji:'👻',color:'#fff',effect:'ghost',desc:'Проходишь сквозь всё',tier:1},
   {name:'Огонь',emoji:'🔥',color:'#f80',effect:'fire',desc:'Огненный хвост',tier:1},
   // === SUPER ===
   {name:'Шприц',emoji:'💉',color:'#f0f',effect:'syringe',desc:'МЕГА-ТРИП: всё плывёт и искажается',tier:2},
   {name:'Трава',emoji:'🌿',color:'#4f4',effect:'weed',desc:'Слоумо + еда x3 + мега-голод',tier:2},
-  {name:'Таблетка',emoji:'💊',color:'#f4f',effect:'pill',desc:'Матрица: инверсия + неуязвимость',tier:2},
+  {name:'Марка',emoji:'🎭',color:'#f4f',effect:'pill',desc:'Калейдоскоп: мир дробится + неуязвимость',tier:2},
 ];
 
 // ===== PARTICLES (no shadowBlur!) =====
@@ -501,7 +497,6 @@ function applyEff(e){
 
   switch(e.effect){
     case'mushroom':trip=Math.min(1,trip+.2);shake.i=15;break;
-    case'rainbow':trip=Math.min(1,trip+.15);break;
     case'fire':trip=Math.min(1,trip+.18);break;
     case'portal':expandField();break;
     // === SUPER ===
@@ -515,9 +510,9 @@ function applyEff(e){
       trip=Math.min(1,trip+.15);
       break;
     case'pill':
-      invincible=true;invertControls=true;
+      invincible=true;
       trip=Math.min(1,trip+.3);shake.i=20;
-      boom(snake[0].x*G+G/2,snake[0].y*G+G/2,30,['#f4f','#fff','#4ff'],35,5);
+      boom(snake[0].x*G+G/2,snake[0].y*G+G/2,40,['#f4f','#fff','#4ff','#ff0','#0ff'],35,5);
       break;
   }
 }
@@ -527,7 +522,7 @@ function tickEffects(){
   expired.forEach(e=>{
     if(e.effect==='portal')shrinkField();
     if(e.effect==='weed')foodMultiplier=1;
-    if(e.effect==='pill'){invincible=false;invertControls=false}
+    if(e.effect==='pill'){invincible=false}
   });
   activeEffects=activeEffects.filter(e=>e.timer>0);
 }
@@ -608,13 +603,16 @@ function step(){
       `hsl(${(hue+180)%360},100%,60%)`,(Math.random()-.5)*.5,(Math.random()-.5)*.5,
       10+trip*20,2+trip*3));
   }
-  // Fire trail
-  if(hasEff('fire')&&particles.length<300){
-    const cx=head.x*G+G/2,cy=head.y*G+G/2;
-    for(let i=0;i<2;i++)
-      particles.push(new Pt(cx+(Math.random()-.5)*8,cy+(Math.random()-.5)*8,
-        `hsl(${20+Math.random()*30},100%,${50+Math.random()*30}%)`,
-        (Math.random()-.5)*2,-1-Math.random()*2,12+Math.random()*8,3+Math.random()*3));
+  // Fire trail — whole snake burns
+  if(hasEff('fire')&&particles.length<400){
+    for(let si=0;si<snake.length;si+=Math.max(1,Math.floor(snake.length/8))){
+      const seg=snake[si];
+      const cx=seg.x*G+G/2,cy=seg.y*G+G/2;
+      for(let i=0;i<2;i++)
+        particles.push(new Pt(cx+(Math.random()-.5)*10,cy+(Math.random()-.5)*10,
+          `hsl(${Math.random()*40},100%,${45+Math.random()*35}%)`,
+          (Math.random()-.5)*3,-1.5-Math.random()*3,14+Math.random()*10,4+Math.random()*4));
+    }
   }
 
   // Weed: green smoke trail
@@ -736,10 +734,11 @@ function _draw(){
     const sw=Math.sin(dT*.8)*.006;
     X.translate(W/2,H/2);X.rotate(sw);X.translate(-W/2,-H/2);
   }
-  // Pill: pulsing zoom
+  // Marka: kaleidoscope rotation + zoom
   if(hasEff('pill')){
-    const p=Math.sin(dT*5)*.01;
-    X.translate(W/2,H/2);X.scale(1+p,1+p);X.translate(-W/2,-H/2);
+    const p=Math.sin(dT*3)*.015;
+    const r=Math.sin(dT*1.5)*.005;
+    X.translate(W/2,H/2);X.rotate(r);X.scale(1+p,1+p);X.translate(-W/2,-H/2);
   }
 
   // Grid
@@ -785,16 +784,16 @@ function _draw(){
   });
 
   // Snake (back to front) with smooth interpolation
-  const ghost=hasEff('ghost'),crystal=hasEff('crystal'),rainbow=hasEff('rainbow');
+  const ghost=hasEff('ghost');
   // Interpolation progress (0 = just stepped, 1 = about to step)
   const elapsed=performance.now()-lastStepTime;
   const lerp=paused||over?1:Math.min(1,elapsed/stepInterval);
 
   for(let i=snake.length-1;i>=0;i--){
     const seg=snake[i],t=i/Math.max(snake.length-1,1);
-    let sh=rainbow?(hue+i*25)%360:(hue+i*(8+trip*15))%360;
-    const sat=crystal?40:85+trip*15;
-    const lit=crystal?75-t*20:60-t*15;
+    let sh=(hue+i*(8+trip*15))%360;
+    const sat=85+trip*15;
+    const lit=60-t*15;
 
     // Smooth position: interpolate from previous to current
     let px=seg.x,py=seg.y;
@@ -827,7 +826,7 @@ function _draw(){
 
     // Head
     if(i===0){
-      const eyeS=hasEff('eye')?5:3.5,ey=sy+G*.38;
+      const eyeS=hasEff('eye')?8:3.5,ey=sy+G*.38;
       X.fillStyle=hasEff('eye')?`hsl(${(hue*3)%360},100%,85%)`:'#fff';
       X.beginPath();
       X.arc(sx+G*.3,ey,eyeS,0,Math.PI*2);
@@ -997,24 +996,32 @@ function _draw(){
     X.globalAlpha=1;
   }
 
-  // === PILL: matrix rain + color inversion effect + grid pulse ===
+  // === MARKA: kaleidoscope + invincibility ===
   if(hasEff('pill')){
-    // Invert flash
-    X.globalCompositeOperation='difference';
-    X.fillStyle=`rgba(255,255,255,${.06+.04*Math.sin(dT*6)})`;X.fillRect(0,0,W,H);
-    X.globalCompositeOperation='source-over';
-    // Matrix-style falling characters
-    X.globalAlpha=.12;
-    X.font='10px monospace';X.fillStyle='#f4f';
-    for(let i=0;i<20;i++){
-      const mx=((i*37+Math.floor(dT*30))%COLS)*G;
-      const my=((Math.floor(dT*8+i*7))%ROWS)*G;
-      X.fillText(String.fromCharCode(0x30A0+Math.floor(Math.random()*96)),mx,my);
+    // Kaleidoscope: mirrored color segments
+    X.save();
+    X.globalAlpha=.08+.04*Math.sin(dT*3);
+    const segments=6;
+    for(let i=0;i<segments;i++){
+      const angle=(Math.PI*2/segments)*i+dT*.5;
+      X.save();X.translate(W/2,H/2);X.rotate(angle);
+      X.fillStyle=`hsla(${(hue*3+i*60)%360},100%,60%,.12)`;
+      X.beginPath();X.moveTo(0,0);X.lineTo(W*.6,W*.15);X.lineTo(W*.6,-W*.15);X.closePath();X.fill();
+      X.restore();
     }
     X.globalAlpha=1;
-    // Pulsing border
-    X.strokeStyle=`hsla(${(hue*5)%360},100%,70%,${.3+.2*Math.sin(dT*8)})`;
+    // Fractal rings
+    for(let r=0;r<4;r++){
+      const ringR=50+r*60+Math.sin(dT*2+r)*20;
+      X.strokeStyle=`hsla(${(hue*4+r*90)%360},100%,70%,${.15+.1*Math.sin(dT*3+r)})`;
+      X.lineWidth=2;X.beginPath();X.arc(W/2,H/2,ringR,0,Math.PI*2);X.stroke();
+    }
+    // Sparkle border
+    X.strokeStyle=`hsla(${(hue*5)%360},100%,80%,${.4+.3*Math.sin(dT*6)})`;
     X.lineWidth=3;X.strokeRect(0,0,W,H);
+    // Golden invincibility shimmer
+    X.fillStyle=`rgba(255,215,0,${.03+.02*Math.sin(dT*4)})`;X.fillRect(0,0,W,H);
+    X.restore();
   }
 
   // Vignette (very light)
@@ -1097,7 +1104,7 @@ function go(){
 // ===== INPUT =====
 document.addEventListener('keydown',e=>{
   const k=e.key.toLowerCase();
-  if(['arrowup','arrowdown','arrowleft','arrowright','w','a','s','d',' '].includes(k))e.preventDefault();
+  if(['arrowup','arrowdown','arrowleft','arrowright','w','a','s','d','ц','ф','ы','в',' '].includes(k))e.preventDefault();
   if(over)return;
   if(k===' '||k==='escape'){paused=!paused;document.getElementById('pauseText').style.display=paused?'block':'none';return}
   if(paused)return;
@@ -1105,10 +1112,10 @@ document.addEventListener('keydown',e=>{
   let nd=null;
   const inv=invertControls?-1:1;
   switch(k){
-    case'arrowup':case'w':nd={x:0,y:-1*inv};break;
-    case'arrowdown':case's':nd={x:0,y:1*inv};break;
-    case'arrowleft':case'a':nd={x:-1*inv,y:0};break;
-    case'arrowright':case'd':nd={x:1*inv,y:0};break;
+    case'arrowup':case'w':case'ц':nd={x:0,y:-1*inv};break;
+    case'arrowdown':case's':case'ы':nd={x:0,y:1*inv};break;
+    case'arrowleft':case'a':case'ф':nd={x:-1*inv,y:0};break;
+    case'arrowright':case'd':case'в':nd={x:1*inv,y:0};break;
   }
   if(!nd)return;
   // Check against current dir (not opposite)
