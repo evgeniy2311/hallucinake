@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>HALLUCINAKE</title>
+<title>Психоделическая Змейка</title>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@500;700&display=swap');
   *{margin:0;padding:0;box-sizing:border-box}
@@ -22,10 +22,22 @@
     justify-content:center;background:rgba(5,5,16,0.92);backdrop-filter:blur(10px);z-index:10;
     transition:opacity 0.5s}
   #overlay.off{opacity:0;pointer-events:none}
-  #overlay h1{font-family:'Orbitron',sans-serif;font-size:44px;font-weight:900;
+  #overlay h1{font-family:'Orbitron',sans-serif;font-size:46px;font-weight:900;
     background:linear-gradient(135deg,#0ff,#f0f,#ff0,#0f0,#f0f,#0ff);
     background-size:400% 400%;-webkit-background-clip:text;-webkit-text-fill-color:transparent;
-    animation:grad 4s ease infinite;margin-bottom:6px}
+    background-clip:text;
+    animation:grad 4s ease infinite,titleGlow 3s ease-in-out infinite,titleFloat 4s ease-in-out infinite;
+    margin-bottom:6px;text-align:center;letter-spacing:4px;
+    filter:drop-shadow(0 0 20px #f0f8) drop-shadow(0 0 40px #0ff6) drop-shadow(0 0 60px #ff04);
+    position:relative;text-transform:uppercase}
+  #overlay h1::before{content:'Психоделическая Змейка';position:absolute;inset:0;
+    background:linear-gradient(135deg,#f0f,#0ff,#ff0,#0f0,#0ff,#f0f);
+    background-size:400% 400%;-webkit-background-clip:text;-webkit-text-fill-color:transparent;
+    background-clip:text;animation:grad 4s ease infinite reverse;
+    filter:blur(12px);opacity:0.6;z-index:-1}
+  @keyframes titleGlow{0%,100%{filter:drop-shadow(0 0 20px #f0f8) drop-shadow(0 0 40px #0ff6) drop-shadow(0 0 60px #ff04)}
+    50%{filter:drop-shadow(0 0 30px #0ff8) drop-shadow(0 0 60px #f0f6) drop-shadow(0 0 80px #ff08)}}
+  @keyframes titleFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
   .sub{font-size:16px;color:#666;margin-bottom:20px}
   .final-score{font-family:'Orbitron',sans-serif;font-size:30px;color:#ff0;text-shadow:0 0 20px #ff0;margin-bottom:8px}
   .diff{display:flex;gap:8px;margin-bottom:16px}
@@ -73,7 +85,7 @@
   <canvas id="c" width="600" height="600"></canvas>
   <div id="pauseText">PAUSED</div>
   <div id="overlay">
-    <h1 id="oT">Галлюциногенная Змейка</h1>
+    <h1 id="oT">Психоделическая Змейка</h1>
     <div class="sub" id="oS">Чем длиннее змейка — тем безумнее мир</div>
     <div id="oF" class="final-score" style="display:none"></div>
     <div class="diff">
@@ -749,7 +761,7 @@ function _draw(){
 function showOvl(){
   const o=document.getElementById('overlay');
   o.classList.remove('off');
-  document.getElementById('oT').textContent=over?'GAME OVER':'Галлюциногенная Змейка';
+  document.getElementById('oT').textContent=over?'GAME OVER':'Психоделическая Змейка';
   document.getElementById('oS').textContent=over?'Трип окончен':'Чем длиннее змейка — тем безумнее мир';
   const f=document.getElementById('oF');
   if(over){f.style.display='block';f.textContent='SCORE: '+score}else f.style.display='none';
